@@ -4,704 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>جعفر AI 🇩🇿</title>
-<style>
-/* ═══ متغيرات الألوان — علم الجزائر ═══ */
-:root {
-  --green:       #006233;
-  --green-light: #007a3d;
-  --green-dark:  #004d28;
-  --white:       #ffffff;
-  --red:         #d21034;
-  --bg:          #0d1f17;
-  --bg2:         #122b1e;
-  --bg3:         #1a3d2b;
-  --border:      #1e4d35;
-  --text:        #e8f5ee;
-  --text-muted:  #7aab8a;
-  --user-bg:     #1a3d2b;
-  --bot-bg:      #122b1e;
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
-}
-
-/* ════ SIDEBAR ════ */
-#sidebar {
-  width: 270px;
-  min-width: 270px;
-  background: var(--bg2);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 16px 12px;
-  gap: 8px;
-  transition: width 0.3s;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 8px 16px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-.logo-icon { font-size: 1.8rem; }
-.logo-text { font-size: 1.1rem; font-weight: bold; color: var(--white); }
-.logo-sub  { font-size: 0.7rem; color: var(--text-muted); }
-
-#new-chat-btn {
-  background: var(--green);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 11px 14px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.2s;
-  width: 100%;
-}
-#new-chat-btn:hover { background: var(--green-light); }
-
-.sidebar-section {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  padding: 8px 8px 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-#history-list {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-#history-list::-webkit-scrollbar { width: 4px; }
-#history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-.history-item {
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.15s;
-}
-.history-item:hover { background: var(--bg3); color: var(--text); }
-.history-item.active { background: var(--bg3); color: var(--white); }
-.history-item .del-btn {
-  margin-right: auto;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.8rem;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.history-item:hover .del-btn { opacity: 1; }
-
-/* Settings Button */
-.sidebar-bottom {
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.sidebar-btn {
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: none;
-  border: none;
-  width: 100%;
-  text-align: right;
-  transition: background 0.15s;
-}
-.sidebar-btn:hover { background: var(--bg3); color: var(--text); }
-
-/* ════ MAIN AREA ════ */
-#main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Header */
-#header {
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-#header h2 { font-size: 0.95rem; color: var(--text-muted); }
-.model-badge {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.model-badge select {
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 0.85rem;
-  cursor: pointer;
-  outline: none;
-}
-
-/* Chat Box */
-#chat-box {
-  flex: 1;
-  overflow-y: auto;
-  padding: 30px 20%;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-#chat-box::-webkit-scrollbar { width: 5px; }
-#chat-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-/* Welcome Screen */
-#welcome {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 16px;
-  padding: 40px;
-  text-align: center;
-}
-#welcome .flag { font-size: 3.5rem; }
-#welcome h1 { font-size: 1.8rem; color: var(--white); }
-#welcome p { color: var(--text-muted); font-size: 0.95rem; }
-.suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 10px;
-}
-.suggestion-btn {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  padding: 10px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s;
-}
-.suggestion-btn:hover { border-color: var(--green); color: var(--text); }
-
-/* Messages */
-.message-wrap { display: flex; flex-direction: column; gap: 4px; }
-.message-wrap.user { align-items: flex-start; }
-.message-wrap.bot  { align-items: flex-end; }
-
-.msg-label { font-size: 0.72rem; color: var(--text-muted); padding: 0 4px; }
-
-.message {
-  max-width: 85%;
-  padding: 13px 18px;
-  border-radius: 16px;
-  font-size: 0.93rem;
-  line-height: 1.7;
-  animation: fadeUp 0.25s ease;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.message.user {
-  background: var(--green-dark);
-  border: 1px solid var(--green);
-  border-bottom-right-radius: 4px;
-}
-.message.bot {
-  background: var(--bot-bg);
-  border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
-}
-.msg-source {
-  font-size: 0.68rem;
-  color: var(--green-light);
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Typing */
-.typing-wrap { display: flex; justify-content: flex-end; }
-.typing {
-  background: var(--bot-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px 20px;
-  display: flex;
-  gap: 5px;
-  align-items: center;
-}
-.typing span {
-  width: 7px; height: 7px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: bounce 1.3s infinite;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce {
-  0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
-  40%         { transform: scale(1);   opacity: 1; }
-}
-
-/* Input Area */
-#input-area {
-  padding: 16px 20%;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.input-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 4px 4px 4px 14px;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  transition: border-color 0.2s;
-}
-.input-box:focus-within { border-color: var(--green); }
-#user-input {
-  flex: 1;
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 0.95rem;
-  padding: 10px 0;
-  outline: none;
-  resize: none;
-  max-height: 150px;
-  line-height: 1.5;
-  font-family: inherit;
-}
-#user-input::placeholder { color: var(--text-muted); }
-#send-btn {
-  background: var(--green);
-  border: none;
-  color: white;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  flex-shrink: 0;
-  margin-bottom: 4px;
-}
-#send-btn:hover { background: var(--green-light); }
-#send-btn:disabled { background: var(--border); cursor: not-allowed; }
-.input-hint { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
-
-/* ════ SETTINGS MODAL ════ */
-#settings-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-}
-#settings-modal.show { display: flex; }
-.modal-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  width: 420px;
-  max-width: 90vw;
-}
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-.modal-header h3 { color: var(--white); font-size: 1.1rem; }
-.close-modal { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.3rem; }
-.setting-row { margin-bottom: 18px; }
-.setting-row label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; }
-.setting-row select,
-.setting-row input[type="range"] {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 0.88rem;
-  outline: none;
-}
-.range-val { color: var(--green); font-weight: bold; margin-right: 8px; }
-.save-btn {
-  background: var(--green);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 24px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  width: 100%;
-  margin-top: 8px;
-  transition: background 0.2s;
-}
-.save-btn:hover { background: var(--green-light); }
-</style>
+<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
 <!-- SIDEBAR -->
-<div id="sidebar">
+<aside id="sidebar">
   <div class="logo">
-    <span class="logo-icon">🇩🇿</span>
+    <div class="logo-flag">🇩🇿</div>
     <div>
-      <div class="logo-text">جعفر AI</div>
+      <div class="logo-title">جعفر AI</div>
       <div class="logo-sub">نموذج شخصي · ورقلة</div>
     </div>
   </div>
 
-  <button id="new-chat-btn" onclick="newChat()">
-    ✏️ دردشة جديدة
-  </button>
+  <button id="new-chat-btn">✏️ دردشة جديدة</button>
 
-  <div class="sidebar-section">المحادثات السابقة</div>
+  <div class="section-label">المحادثات السابقة</div>
   <div id="history-list"></div>
 
-  <div class="sidebar-bottom">
-    <button class="sidebar-btn" onclick="openSettings()">⚙️ الإعدادات</button>
-    <button class="sidebar-btn" onclick="clearAll()">🗑️ حذف الكل</button>
+  <div class="sidebar-footer">
+    <button class="footer-btn" id="settings-btn">⚙️ الإعدادات</button>
+    <button class="footer-btn danger" id="clear-btn">🗑️ حذف الكل</button>
   </div>
-</div>
+</aside>
 
 <!-- MAIN -->
-<div id="main">
-  <div id="header">
-    <h2 id="chat-title">دردشة جديدة</h2>
-    <div class="model-badge">
-      🤖
-      <select id="model-picker" onchange="saveSettings()">
+<main id="main">
+  <header id="topbar">
+    <span id="chat-title">دردشة جديدة</span>
+    <div class="model-selector">
+      <span>🤖</span>
+      <select id="model-picker">
         <option value="v1">Model v1</option>
         <option value="v2" selected>Model v2</option>
       </select>
     </div>
-  </div>
+  </header>
 
   <div id="chat-box">
     <div id="welcome">
-      <div class="flag">🇩🇿</div>
-      <h1>مرحباً بك في جعفر AI</h1>
+      <div class="welcome-flag">🇩🇿</div>
+      <h1>مرحباً في جعفر AI</h1>
       <p>اسألني أي شيء عن جعفر لشهب، المبرمج الجزائري من ورقلة</p>
-      <div class="suggestions">
-        <button class="suggestion-btn" onclick="suggest(this)">من هو جعفر؟</button>
-        <button class="suggestion-btn" onclick="suggest(this)">أين يسكن جعفر؟</button>
-        <button class="suggestion-btn" onclick="suggest(this)">ما مشاريع جعفر؟</button>
-        <button class="suggestion-btn" onclick="suggest(this)">ما لغة جعفر المفضلة؟</button>
-        <button class="suggestion-btn" onclick="suggest(this)">هل جعفر يحب الشطرنج؟</button>
-        <button class="suggestion-btn" onclick="suggest(this)">من والد جعفر؟</button>
+      <div id="suggestions">
+        <button class="sug-btn">من هو جعفر؟</button>
+        <button class="sug-btn">أين يسكن جعفر؟</button>
+        <button class="sug-btn">ما مشاريع جعفر؟</button>
+        <button class="sug-btn">ما لغته المفضلة؟</button>
+        <button class="sug-btn">هل يحب الشطرنج؟</button>
+        <button class="sug-btn">من والد جعفر؟</button>
       </div>
     </div>
   </div>
 
-  <div id="input-area">
-    <div class="input-box">
+  <footer id="input-area">
+    <div id="input-box">
       <textarea id="user-input" placeholder="اسأل عن جعفر لشهب..." rows="1"></textarea>
-      <button id="send-btn" onclick="sendMessage()">➤</button>
+      <button id="send-btn" title="إرسال">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
     </div>
-    <div class="input-hint">اضغط Enter للإرسال · Shift+Enter لسطر جديد</div>
-  </div>
-</div>
+    <div id="input-hint">Enter للإرسال &nbsp;·&nbsp; Shift+Enter لسطر جديد</div>
+  </footer>
+</main>
 
 <!-- SETTINGS MODAL -->
-<div id="settings-modal">
-  <div class="modal-box">
-    <div class="modal-header">
+<div id="modal-overlay">
+  <div id="modal">
+    <div class="modal-head">
       <h3>⚙️ الإعدادات</h3>
-      <button class="close-modal" onclick="closeSettings()">✕</button>
+      <button id="close-modal">✕</button>
     </div>
 
-    <div class="setting-row">
-      <label>النموذج الافتراضي</label>
-      <select id="setting-model">
-        <option value="v1">Model v1 — خفيف</option>
-        <option value="v2" selected>Model v2 — متقدم</option>
-      </select>
-    </div>
+    <label class="setting-label">النموذج الافتراضي</label>
+    <select class="setting-input" id="s-model">
+      <option value="v1">Model v1 — خفيف</option>
+      <option value="v2" selected>Model v2 — متقدم</option>
+    </select>
 
-    <div class="setting-row">
-      <label>درجة الإبداع (Temperature) — <span class="range-val" id="temp-val">0.6</span></label>
-      <input type="range" id="setting-temp" min="0.1" max="1.0" step="0.1" value="0.6"
-        oninput="document.getElementById('temp-val').textContent=this.value">
-    </div>
+    <label class="setting-label">
+      درجة الإبداع — <strong id="s-temp-val">0.6</strong>
+    </label>
+    <input class="setting-range" type="range" id="s-temp"
+      min="0.1" max="1.0" step="0.1" value="0.6">
 
-    <div class="setting-row">
-      <label>أقصى طول للرد (Tokens) — <span class="range-val" id="tokens-val">60</span></label>
-      <input type="range" id="setting-tokens" min="20" max="150" step="10" value="60"
-        oninput="document.getElementById('tokens-val').textContent=this.value">
-    </div>
+    <label class="setting-label">
+      أقصى طول للرد — <strong id="s-tokens-val">60</strong> token
+    </label>
+    <input class="setting-range" type="range" id="s-tokens"
+      min="20" max="150" step="10" value="60">
 
-    <button class="save-btn" onclick="saveSettings()">💾 حفظ الإعدادات</button>
+    <button id="save-settings-btn">💾 حفظ</button>
   </div>
 </div>
 
-<script>
-// ═══ State ═══
-let sessions  = JSON.parse(localStorage.getItem('jaafar_sessions') || '{}');
-let currentId = null;
-let settings  = JSON.parse(localStorage.getItem('jaafar_settings') || '{"model":"v2","temp":0.6,"tokens":60}');
-let isWaiting = false;
-
-// ═══ Init ═══
-applySettings();
-renderHistory();
-
-function applySettings() {
-  document.getElementById('model-picker').value    = settings.model;
-  document.getElementById('setting-model').value   = settings.model;
-  document.getElementById('setting-temp').value    = settings.temp;
-  document.getElementById('setting-tokens').value  = settings.tokens;
-  document.getElementById('temp-val').textContent  = settings.temp;
-  document.getElementById('tokens-val').textContent = settings.tokens;
-}
-
-// ═══ New Chat ═══
-function newChat() {
-  currentId = Date.now().toString();
-  sessions[currentId] = { title: 'دردشة جديدة', messages: [] };
-  saveSessions();
-  renderHistory();
-  renderChat();
-}
-
-// ═══ Render History ═══
-function renderHistory() {
-  const list = document.getElementById('history-list');
-  list.innerHTML = '';
-  const ids = Object.keys(sessions).reverse();
-  if (ids.length === 0) {
-    list.innerHTML = '<div style="font-size:0.8rem;color:var(--text-muted);padding:8px 12px">لا توجد محادثات بعد</div>';
-    return;
-  }
-  ids.forEach(id => {
-    const s   = sessions[id];
-    const div = document.createElement('div');
-    div.className = 'history-item' + (id === currentId ? ' active' : '');
-    div.innerHTML = `<span>💬</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis">${s.title}</span>
-      <button class="del-btn" onclick="deleteSession('${id}',event)">✕</button>`;
-    div.onclick = () => loadSession(id);
-    list.appendChild(div);
-  });
-}
-
-// ═══ Load Session ═══
-function loadSession(id) {
-  currentId = id;
-  renderHistory();
-  renderChat();
-}
-
-// ═══ Delete Session ═══
-function deleteSession(id, e) {
-  e.stopPropagation();
-  delete sessions[id];
-  if (currentId === id) { currentId = null; }
-  saveSessions();
-  renderHistory();
-  if (!currentId) renderChat();
-}
-
-function clearAll() {
-  if (!confirm('حذف كل المحادثات؟')) return;
-  sessions = {};
-  currentId = null;
-  saveSessions();
-  renderHistory();
-  renderChat();
-}
-
-// ═══ Render Chat ═══
-function renderChat() {
-  const box = document.getElementById('chat-box');
-  const welcome = document.getElementById('welcome');
-
-  if (!currentId || !sessions[currentId]) {
-    box.innerHTML = '';
-    box.appendChild(welcome);
-    welcome.style.display = 'flex';
-    document.getElementById('chat-title').textContent = 'دردشة جديدة';
-    return;
-  }
-
-  welcome.style.display = 'none';
-  box.innerHTML = '';
-
-  const msgs = sessions[currentId].messages;
-  document.getElementById('chat-title').textContent = sessions[currentId].title;
-
-  msgs.forEach(m => addBubble(m.role, m.text, m.source, false));
-  box.scrollTop = box.scrollHeight;
-}
-
-// ═══ Add Bubble ═══
-function addBubble(role, text, source='', scroll=true) {
-  const welcome = document.getElementById('welcome');
-  welcome.style.display = 'none';
-
-  const box  = document.getElementById('chat-box');
-  const wrap = document.createElement('div');
-  wrap.className = `message-wrap ${role}`;
-
-  const label = role === 'user' ? 'أنت' : '🤖 جعفر AI';
-  wrap.innerHTML = `
-    <div class="msg-label">${label}</div>
-    <div class="message ${role}">
-      ${text}
-      ${source ? `<div class="msg-source">⚡ ${source}</div>` : ''}
-    </div>`;
-
-  box.appendChild(wrap);
-  if (scroll) box.scrollTop = box.scrollHeight;
-  return wrap;
-}
-
-// ═══ Send Message ═══
-async function sendMessage() {
-  const input = document.getElementById('user-input');
-  const msg   = input.value.trim();
-  if (!msg || isWaiting) return;
-
-  if (!currentId) newChat();
-
-  // تحديث العنوان
-  if (sessions[currentId].messages.length === 0) {
-    sessions[currentId].title = msg.slice(0, 28) + (msg.length > 28 ? '...' : '');
-  }
-
-  sessions[currentId].messages.push({ role: 'user', text: msg });
-  saveSessions();
-  renderHistory();
-  addBubble('user', msg);
-  input.value = '';
-  input.style.height = 'auto';
-
-  // Typing
-  isWaiting = true;
-  document.getElementById('send-btn').disabled = true;
-  const box = document.getElementById('chat-box');
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'typing-wrap';
-  typingDiv.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  box.appendChild(typingDiv);
-  box.scrollTop = box.scrollHeight;
-
-  try {
-    const res  = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: msg,
-        model:   settings.model,
-        temp:    settings.temp,
-        tokens:  settings.tokens
-      })
-    });
-    const data = await res.json();
-    typingDiv.remove();
-
-    sessions[currentId].messages.push({ role: 'bot', text: data.response, source: data.source });
-    saveSessions();
-    addBubble('bot', data.response, data.source || '');
-  } catch(e) {
-    typingDiv.remove();
-    addBubble('bot', '❌ خطأ في الاتصال بالخادم');
-  }
-
-  isWaiting = false;
-  document.getElementById('send-btn').disabled = false;
-}
-
-// ═══ Suggestion ═══
-function suggest(btn) {
-  document.getElementById('user-input').value = btn.textContent;
-  sendMessage();
-}
-
-// ═══ Settings ═══
-function openSettings()  { document.getElementById('settings-modal').classList.add('show'); }
-function closeSettings() { document.getElementById('settings-modal').classList.remove('show'); }
-
-function saveSettings() {
-  settings.model  = document.getElementById('setting-model').value;
-  settings.temp   = parseFloat(document.getElementById('setting-temp').value);
-  settings.tokens = parseInt(document.getElementById('setting-tokens').value);
-  document.getElementById('model-picker').value = settings.model;
-  localStorage.setItem('jaafar_settings', JSON.stringify(settings));
-  closeSettings();
-}
-
-// ═══ Enter Key ═══
-document.getElementById('user-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-// Auto-resize textarea
-document.getElementById('user-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-});
-
-// ═══ Utils ═══
-function saveSessions() { localStorage.setItem('jaafar_sessions', JSON.stringify(sessions)); }
-</script>
+<script src="/static/app.js"></script>
 </body>
 </html>
